@@ -1,72 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Scraper Bot</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 20px; background: #0f0f0f; color: #fff; }
-        h1 { color: #00ff88; }
-        input { width: 70%; padding: 10px; border-radius: 6px; border: none; font-size: 16px; }
-        button { padding: 10px 20px; background: #00ff88; color: #000; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
-        th { background: #00ff88; color: #000; padding: 10px; }
-        td { padding: 10px; border-bottom: 1px solid #333; }
-        tr:hover { background: #1a1a1a; }
-        #status { margin-top: 15px; color: #00ff88; font-size: 18px; }
-        .badge { background: #00ff88; color: #000; padding: 3px 10px; border-radius: 20px; font-weight: bold; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scraper Pro</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0a0e1a; color: #e0e6f0; min-height: 100vh; }
+  .navbar { background: #0d1226; border-bottom: 1px solid #1e2d50; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+  .navbar h1 { font-size: 22px; color: #4f9eff; letter-spacing: 1px; }
+  .navbar span { font-size: 13px; color: #5a7aaa; }
+  .hero { background: linear-gradient(135deg, #0d1226, #111c3a); padding: 50px 40px 30px; text-align: center; }
+  .hero h2 { font-size: 32px; color: #fff; margin-bottom: 10px; }
+  .hero p { color: #5a7aaa; font-size: 15px; margin-bottom: 30px; }
+  .search-box { display: flex; gap: 12px; max-width: 780px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+  .search-box input { flex: 1; padding: 14px 18px; border-radius: 10px; border: 1px solid #1e2d50; background: #0f1628; color: #fff; font-size: 15px; min-width: 280px; outline: none; }
+  .search-box input:focus { border-color: #4f9eff; }
+  .search-box select { padding: 14px 12px; border-radius: 10px; border: 1px solid #1e2d50; background: #0f1628; color: #fff; font-size: 14px; outline: none; }
+  .btn-scrape { padding: 14px 30px; background: #4f9eff; color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+  .btn-scrape:hover { background: #2d7de0; }
+  .btn-scrape:disabled { background: #2a3a5a; cursor: not-allowed; }
+  .status-bar { text-align: center; margin-top: 18px; font-size: 14px; color: #4f9eff; min-height: 22px; }
+  .loader { display: inline-block; width: 14px; height: 14px; border: 2px solid #4f9eff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .stats { display: flex; gap: 20px; justify-content: center; padding: 30px 40px 10px; flex-wrap: wrap; }
+  .stat-card { background: #0d1226; border: 1px solid #1e2d50; border-radius: 12px; padding: 20px 30px; text-align: center; min-width: 140px; }
+  .stat-card .num { font-size: 28px; font-weight: bold; color: #4f9eff; }
+  .stat-card .label { font-size: 12px; color: #5a7aaa; margin-top: 4px; }
+  .results-section { padding: 20px 40px 60px; }
+  .results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .results-header h3 { font-size: 18px; color: #fff; }
+  .btn-export { padding: 10px 20px; background: transparent; color: #4f9eff; border: 1px solid #4f9eff; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+  .btn-export:hover { background: #4f9eff; color: #fff; }
+  .card { background: #0d1226; border: 1px solid #1e2d50; border-radius: 14px; padding: 24px; margin-bottom: 20px; transition: border-color 0.2s; }
+  .card:hover { border-color: #4f9eff; }
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  .card-title { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 4px; }
+  .card-url { font-size: 12px; color: #4f9eff; word-break: break-all; }
+  .card-desc { font-size: 13px; color: #5a7aaa; margin-bottom: 16px; }
+  .card-time { font-size: 11px; color: #3a5080; white-space: nowrap; margin-left: 10px; }
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .info-block { background: #0a0e1a; border: 1px solid #1a2540; border-radius: 10px; padding: 14px; }
+  .info-block .block-title { font-size: 11px; color: #5a7aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .tag { display: inline-block; background: #111c3a; border: 1px solid #1e2d50; color: #c0d0f0; border-radius: 6px; padding: 4px 10px; font-size: 12px; margin: 3px 3px 3px 0; word-break: break-all; }
+  .tag.email { border-color: #2d6aff; color: #7ab0ff; }
+  .tag.phone { border-color: #2d9e6a; color: #6ddba8; }
+  .tag.address { border-color: #9e6a2d; color: #dba86d; }
+  .social-link { display: inline-block; background: #111c3a; border: 1px solid #1e2d50; color: #7ab0ff; border-radius: 6px; padding: 4px 10px; font-size: 12px; margin: 3px 3px 3px 0; text-decoration: none; }
+  .social-link:hover { background: #1e2d50; }
+  .empty { color: #2a3a5a; font-size: 12px; font-style: italic; }
+  .btn-delete { background: transparent; border: none; color: #3a5080; cursor: pointer; font-size: 16px; padding: 4px 8px; border-radius: 6px; transition: color 0.2s; }
+  .btn-delete:hover { color: #ff4f4f; }
+  .no-results { text-align: center; padding: 60px; color: #2a3a5a; }
+</style>
 </head>
 <body>
-    <h1>Email Scraper Bot</h1>
-    <div>
-        <input type="text" id="urlInput" placeholder="https://website.com" />
-        <button onclick="startScrape()">Scrape</button>
-    </div>
-    <div id="status"></div>
-
-    <h2>Found Emails <span class="badge">{{ emails|length }}</span></h2>
-    <table id="emailTable">
-        <thead>
-            <tr>
-                <th>Email</th>
-                <th>Source URL</th>
-                <th>Found At</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for email, source, found_at in emails %}
-            <tr>
-                <td>{{ email }}</td>
-                <td>{{ source }}</td>
-                <td>{{ found_at }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <script>
-        async function startScrape() {
-            const url = document.getElementById("urlInput").value;
-            if (!url) return alert("URL daalo pehle");
-
-            document.getElementById("status").innerText = "Scraping...";
-
-            const res = await fetch("/scrape", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ url: url })
-            });
-
-            const data = await res.json();
-            document.getElementById("status").innerText = `${data.count} emails mile!`;
-
-            const tbody = document.getElementById("emailTable").querySelector("tbody");
-            data.emails.forEach(email => {
-                const row = `<tr><td>${email}</td><td>${url}</td><td>Now</td></tr>`;
-                tbody.innerHTML = row + tbody.innerHTML;
-            });
-        }
-    </script>
+<div class="navbar">
+  <h1>⚡ Scraper Pro</h1>
+  <span>Email · Phone · Location · Social</span>
+</div>
+<div class="hero">
+  <h2>Website Intelligence Tool</h2>
+  <p>Kisi bhi website se emails, phones, social links aur location extract karo</p>
+  <div class="search-box">
+    <input type="text" id="urlInput" placeholder="https://website.com" />
+    <select id="depthSelect">
+      <option value="1">Depth 1 — Sirf homepage</option>
+      <option value="2" selected>Depth 2 — Linked pages</option>
+      <option value="3">Depth 3 — Deep crawl</option>
+    </select>
+    <button class="btn-scrape" id="scrapeBtn" onclick="startScrape()">Scrape</button>
+  </div>
+  <div class="status-bar" id="status"></div>
+</div>
+<div class="stats">
+  <div class="stat-card"><div class="num" id="statSites">{{ results|length }}</div><div class="label">Sites Scraped</div></div>
+  <div class="stat-card"><div class="num" id="statEmails">0</div><div class="label">Emails Found</div></div>
+  <div class="stat-card"><div class="num" id="statPhones">0</div><div class="label">Phones Found</div></div>
+</div>
+<div class="results-section">
+  <div class="results-header">
+    <h3>Scraped Results</h3>
+    <button class="btn-export" onclick="exportCSV()">Export CSV</button>
+  </div>
+  <div id="resultsContainer">
+    {% if results %}
+      {% for r in results %}
+      <div class="card" id="card-{{ r.id }}">
+        <div class="card-header">
+          <div>
+            <div class="card-title">{{ r.title or r.url }}</div>
+            <div class="card-url">{{ r.url }}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="card-time">{{ r.scraped_at }}</span>
+            <button class="btn-delete" onclick="deleteResult({{ r.id }})">✕</button>
+          </div>
+        </div>
+        {% if r.description %}<div class="card-desc">{{ r.description }}</div>{% endif %}
+        <div class="info-grid">
+          <div class="info-block"><div class="block-title">Emails</div>{% if r.emails %}{% for e in r.emails %}<span class="tag email">{{ e }}</span>{% endfor %}{% else %}<span class="empty">Not found</span>{% endif %}</div>
+          <div class="info-block"><div class="block-title">Phone Numbers</div>{% if r.phones %}{% for p in r.phones %}<span class="tag phone">{{ p }}</span>{% endfor %}{% else %}<span class="empty">Not found</span>{% endif %}</div>
+          <div class="info-block"><div class="block-title">Address / Location</div>{% if r.address %}{% for a in r.address %}<span class="tag address">{{ a }}</span>{% endfor %}{% else %}<span class="empty">Not found</span>{% endif %}</div>
+          <div class="info-block"><div class="block-title">Social Links</div>{% if r.social_links %}{% for name, link in r.social_links.items() %}<a class="social-link" href="{{ link }}" target="_blank">{{ name }}</a>{% endfor %}{% else %}<span class="empty">Not found</span>{% endif %}</div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+    <div class="no-results"><p>Koi result nahi abhi — URL daalo aur scrape karo</p></div>
+    {% endif %}
+  </div>
+</div>
+<script>
+let totalCount = {{ results|length }};
+async function startScrape() {
+  const url = document.getElementById("urlInput").value.trim();
+  const depth = document.getElementById("depthSelect").value;
+  const btn = document.getElementById("scrapeBtn");
+  const status = document.getElementById("status");
+  if (!url) return alert("URL daalo pehle");
+  btn.disabled = true;
+  status.innerHTML = '<span class="loader"></span> Scraping chal raha hai...';
+  try {
+    const res = await fetch("/scrape", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url, depth }) });
+    const data = await res.json();
+    status.innerHTML = `Done! ${(data.emails||[]).length} emails, ${(data.phones||[]).length} phones mile.`;
+    addCard(data);
+    updateStats(data);
+  } catch(e) { status.innerHTML = "Error aya — check karo URL sahi hai"; }
+  btn.disabled = false;
+}
+function addCard(r) {
+  const container = document.getElementById("resultsContainer");
+  const noResults = container.querySelector(".no-results");
+  if (noResults) noResults.remove();
+  const emails = (r.emails||[]).map(e => `<span class="tag email">${e}</span>`).join("") || '<span class="empty">Not found</span>';
+  const phones = (r.phones||[]).map(p => `<span class="tag phone">${p}</span>`).join("") || '<span class="empty">Not found</span>';
+  const addresses = (r.address||[]).map(a => `<span class="tag address">${a}</span>`).join("") || '<span class="empty">Not found</span>';
+  const socials = Object.entries(r.social_links||{}).map(([n,l]) => `<a class="social-link" href="${l}" target="_blank">${n}</a>`).join("") || '<span class="empty">Not found</span>';
+  const card = `<div class="card"><div class="card-header"><div><div class="card-title">${r.title||r.url}</div><div class="card-url">${r.url}</div></div><span class="card-time">Just now</span></div>${r.description?`<div class="card-desc">${r.description}</div>`:""}<div class="info-grid"><div class="info-block"><div class="block-title">Emails</div>${emails}</div><div class="info-block"><div class="block-title">Phone Numbers</div>${phones}</div><div class="info-block"><div class="block-title">Address / Location</div>${addresses}</div><div class="info-block"><div class="block-title">Social Links</div>${socials}</div></div></div>`;
+  container.insertAdjacentHTML("afterbegin", card);
+}
+function updateStats(data) {
+  document.getElementById("statSites").innerText = parseInt(document.getElementById("statSites").innerText) + 1;
+  document.getElementById("statEmails").innerText = parseInt(document.getElementById("statEmails").innerText) + (data.emails||[]).length;
+  document.getElementById("statPhones").innerText = parseInt(document.getElementById("statPhones").innerText) + (data.phones||[]).length;
+}
+async function deleteResult(id) {
+  await fetch(`/delete/${id}`, { method: "DELETE" });
+  document.getElementById(`card-${id}`).remove();
+}
+function exportCSV() {
+  const rows = [["Title","URL","Emails","Phones","Address","Social Links"]];
+  document.querySelectorAll(".card").forEach(card => {
+    const title = card.querySelector(".card-title")?.innerText||"";
+    const url = card.querySelector(".card-url")?.innerText||"";
+    const emails = [...card.querySelectorAll(".tag.email")].map(e=>e.innerText).join(";");
+    const phones = [...card.querySelectorAll(".tag.phone")].map(p=>p.innerText).join(";");
+    const address = [...card.querySelectorAll(".tag.address")].map(a=>a.innerText).join(";");
+    const socials = [...card.querySelectorAll(".social-link")].map(s=>s.innerText).join(";");
+    rows.push([title,url,emails,phones,address,socials]);
+  });
+  const csv = rows.map(r=>r.map(c=>`"${c}"`).join(",")).join("\n");
+  const blob = new Blob([csv],{type:"text/csv"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "scraped_data.csv";
+  a.click();
+}
+</script>
 </body>
 </html>
