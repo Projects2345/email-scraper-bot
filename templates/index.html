@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Scraper Bot</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 20px; background: #0f0f0f; color: #fff; }
+        h1 { color: #00ff88; }
+        input { width: 70%; padding: 10px; border-radius: 6px; border: none; font-size: 16px; }
+        button { padding: 10px 20px; background: #00ff88; color: #000; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        th { background: #00ff88; color: #000; padding: 10px; }
+        td { padding: 10px; border-bottom: 1px solid #333; }
+        tr:hover { background: #1a1a1a; }
+        #status { margin-top: 15px; color: #00ff88; font-size: 18px; }
+        .badge { background: #00ff88; color: #000; padding: 3px 10px; border-radius: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Email Scraper Bot</h1>
+    <div>
+        <input type="text" id="urlInput" placeholder="https://website.com" />
+        <button onclick="startScrape()">Scrape</button>
+    </div>
+    <div id="status"></div>
+
+    <h2>Found Emails <span class="badge">{{ emails|length }}</span></h2>
+    <table id="emailTable">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Source URL</th>
+                <th>Found At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for email, source, found_at in emails %}
+            <tr>
+                <td>{{ email }}</td>
+                <td>{{ source }}</td>
+                <td>{{ found_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        async function startScrape() {
+            const url = document.getElementById("urlInput").value;
+            if (!url) return alert("URL daalo pehle");
+
+            document.getElementById("status").innerText = "Scraping...";
+
+            const res = await fetch("/scrape", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url: url })
+            });
+
+            const data = await res.json();
+            document.getElementById("status").innerText = `${data.count} emails mile!`;
+
+            const tbody = document.getElementById("emailTable").querySelector("tbody");
+            data.emails.forEach(email => {
+                const row = `<tr><td>${email}</td><td>${url}</td><td>Now</td></tr>`;
+                tbody.innerHTML = row + tbody.innerHTML;
+            });
+        }
+    </script>
+</body>
+</html>
