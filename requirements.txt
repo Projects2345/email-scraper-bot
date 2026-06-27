@@ -1,5 +1,8 @@
 requests
 beautifulsoup4
 flask
+flask-login
+werkzeug
 pandas
 schedule
+phonenumbers
