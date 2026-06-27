@@ -1,44 +1,72 @@
 import sqlite3
-import csv
 import os
-from config import OUTPUT_CSV, DB_FILE
+import json
+from config import DB_FILE
 
 def init_db():
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
     c.execute('''
-        CREATE TABLE IF NOT EXISTS emails (
+        CREATE TABLE IF NOT EXISTS results (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE,
-            source_url TEXT,
-            found_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            url TEXT,
+            title TEXT,
+            description TEXT,
+            emails TEXT,
+            phones TEXT,
+            social_links TEXT,
+            address TEXT,
+            scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
     conn.commit()
     conn.close()
 
-def save_email(email, source_url):
+def save_result(result):
     try:
         conn = sqlite3.connect(DB_FILE)
         c = conn.cursor()
-        c.execute("INSERT OR IGNORE INTO emails (email, source_url) VALUES (?, ?)",
-                  (email, source_url))
+        c.execute('''
+            INSERT INTO results (url, title, description, emails, phones, social_links, address)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            result["url"],
+            result["title"],
+            result["description"],
+            json.dumps(result["emails"]),
+            json.dumps(result["phones"]),
+            json.dumps(result["social_links"]),
+            json.dumps(result["address"])
+        ))
         conn.commit()
         conn.close()
     except Exception as e:
         print(f"DB Error: {e}")
 
-    file_exists = os.path.isfile(OUTPUT_CSV)
-    with open(OUTPUT_CSV, 'a', newline='') as f:
-        writer = csv.writer(f)
-        if not file_exists:
-            writer.writerow(['Email', 'Source URL'])
-        writer.writerow([email, source_url])
-
-def get_all_emails():
+def get_all_results():
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
-    c.execute("SELECT email, source_url, found_at FROM emails ORDER BY found_at DESC")
+    c.execute("SELECT * FROM results ORDER BY scraped_at DESC")
     rows = c.fetchall()
     conn.close()
-    return rows
+    results = []
+    for row in rows:
+        results.append({
+            "id": row[0],
+            "url": row[1],
+            "title": row[2],
+            "description": row[3],
+            "emails": json.loads(row[4]),
+            "phones": json.loads(row[5]),
+            "social_links": json.loads(row[6]),
+            "address": json.loads(row[7]),
+            "scraped_at": row[8]
+        })
+    return results
+
+def delete_result(result_id):
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute("DELETE FROM results WHERE id = ?", (result_id,))
+    conn.commit()
+    conn.close()
