@@ -6,7 +6,7 @@ from parser import extract_emails, extract_phones, extract_social_links, extract
 from storage import save_result
 from config import DELAY_BETWEEN_REQUESTS
 
-def scrape_url(url, visited=None, depth=2):
+def scrape_url(url, visited=None, depth=2, user_id=None):
     if visited is None:
         visited = set()
     if url in visited or depth == 0:
@@ -26,7 +26,7 @@ def scrape_url(url, visited=None, depth=2):
     }
 
     try:
-        headers = {"User-Agent": "Mozilla/5.0"}
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
 
@@ -41,7 +41,7 @@ def scrape_url(url, visited=None, depth=2):
         result["social_links"] = extract_social_links(soup)
         result["address"] = extract_address(text)
 
-        save_result(result)
+        save_result(result, user_id=user_id)
 
         time.sleep(DELAY_BETWEEN_REQUESTS)
 
@@ -50,16 +50,16 @@ def scrape_url(url, visited=None, depth=2):
             for a in soup.find_all("a", href=True):
                 full_url = urljoin(url, a["href"])
                 if urlparse(full_url).netloc == base_domain and full_url not in visited:
-                    scrape_url(full_url, visited, depth - 1)
+                    scrape_url(full_url, visited, depth - 1, user_id=user_id)
 
     except Exception as e:
-        print(f"Error: {url}: {e}")
+        print(f"Error scraping {url}: {e}")
 
     return result
 
-def scrape_multiple(urls):
+def scrape_multiple(urls, user_id=None):
     results = []
     for url in urls:
-        r = scrape_url(url)
+        r = scrape_url(url, user_id=user_id)
         results.append(r)
     return results
