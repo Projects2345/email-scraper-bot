@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scraper Pro — Website Intelligence Tool</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0a0e1a; color: #e0e6f0; min-height: 100vh; }
+  .navbar { background: #0d1226; border-bottom: 1px solid #1e2d50; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+  .navbar h1 { font-size: 22px; color: #4f9eff; letter-spacing: 1px; }
+  .nav-links { display: flex; gap: 12px; }
+  .btn-nav { padding: 9px 22px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .btn-outline { background: transparent; color: #4f9eff; border: 1px solid #4f9eff; }
+  .btn-outline:hover { background: #4f9eff; color: #fff; }
+  .btn-solid { background: #4f9eff; color: #fff; border: 1px solid #4f9eff; }
+  .btn-solid:hover { background: #2d7de0; }
+
+  .hero { padding: 100px 40px 80px; text-align: center; background: linear-gradient(135deg, #0d1226 0%, #111c3a 100%); }
+  .badge { display: inline-block; background: #111c3a; border: 1px solid #1e2d50; color: #4f9eff; border-radius: 20px; padding: 6px 18px; font-size: 13px; margin-bottom: 28px; letter-spacing: 0.5px; }
+  .hero h2 { font-size: 52px; font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 20px; }
+  .hero h2 span { color: #4f9eff; }
+  .hero p { font-size: 18px; color: #5a7aaa; max-width: 560px; margin: 0 auto 44px; line-height: 1.7; }
+  .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-lg { padding: 15px 36px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: none; border: none; transition: all 0.2s; }
+  .btn-primary { background: #4f9eff; color: #fff; }
+  .btn-primary:hover { background: #2d7de0; transform: translateY(-1px); }
+  .btn-secondary { background: transparent; color: #e0e6f0; border: 1px solid #1e2d50; }
+  .btn-secondary:hover { border-color: #4f9eff; color: #4f9eff; }
+
+  .features { padding: 80px 40px; max-width: 1100px; margin: 0 auto; }
+  .features h3 { text-align: center; font-size: 30px; color: #fff; margin-bottom: 50px; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .feature-card { background: #0d1226; border: 1px solid #1e2d50; border-radius: 16px; padding: 28px; transition: border-color 0.2s; }
+  .feature-card:hover { border-color: #4f9eff; }
+  .feature-icon { font-size: 32px; margin-bottom: 14px; }
+  .feature-card h4 { color: #fff; font-size: 16px; margin-bottom: 10px; }
+  .feature-card p { color: #5a7aaa; font-size: 14px; line-height: 1.6; }
+
+  .cta { background: linear-gradient(135deg, #0d1226, #111c3a); border-top: 1px solid #1e2d50; padding: 80px 40px; text-align: center; }
+  .cta h3 { font-size: 32px; color: #fff; margin-bottom: 16px; }
+  .cta p { color: #5a7aaa; margin-bottom: 36px; font-size: 16px; }
+
+  footer { border-top: 1px solid #1e2d50; padding: 24px 40px; text-align: center; color: #2a3a5a; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="navbar">
+  <h1>⚡ Scraper Pro</h1>
+  <div class="nav-links">
+    <a href="/login" class="btn-nav btn-outline">Login</a>
+    <a href="/signup" class="btn-nav btn-solid">Sign Up Free</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="badge">🔍 Website Intelligence Tool</div>
+  <h2>Extract <span>Emails, Phones</span><br>& Business Data Instantly</h2>
+  <p>Kisi bhi website se contacts, social links aur location automatically scrape karo — seconds mein.</p>
+  <div class="hero-btns">
+    <a href="/signup" class="btn-lg btn-primary">Get Started Free</a>
+    <a href="/login" class="btn-lg btn-secondary">Login →</a>
+  </div>
+</div>
+
+<div class="features">
+  <h3>Sab kuch ek jagah</h3>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📧</div>
+      <h4>Email Extraction</h4>
+      <p>Website ke kisi bhi page se emails automatically dhundho aur export karo CSV mein.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📞</div>
+      <h4>Phone Numbers</h4>
+      <p>Business phone numbers aur contact numbers page se extract karo.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔗</div>
+      <h4>Social Links</h4>
+      <p>Facebook, Instagram, LinkedIn, Twitter — sab social profiles ek click mein.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📍</div>
+      <h4>Address & Location</h4>
+      <p>Business addresses aur physical locations automatically detect karo.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🕸️</div>
+      <h4>Deep Crawling</h4>
+      <p>Sirf homepage nahi — puri website ke linked pages bhi scan karo depth control ke saath.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h4>Export CSV</h4>
+      <p>Sare results ek click mein CSV file mein export karo Excel ke liye.</p>
+    </div>
+  </div>
+</div>
+
+<div class="cta">
+  <h3>Ready ho? Abhi shuru karo.</h3>
+  <p>Free account banao aur apni pehli website abhi scrape karo.</p>
+  <a href="/signup" class="btn-lg btn-primary">Create Free Account</a>
+</div>
+
+<footer>
+  <p>⚡ Scraper Pro — Built for business intelligence</p>
+</footer>
+</body>
+</html>
