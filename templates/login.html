@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — Scraper Pro</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0a0e1a; color: #e0e6f0; min-height: 100vh; display: flex; flex-direction: column; }
+  .navbar { background: #0d1226; border-bottom: 1px solid #1e2d50; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+  .navbar h1 { font-size: 22px; color: #4f9eff; letter-spacing: 1px; text-decoration: none; }
+  .navbar a { text-decoration: none; color: inherit; }
+  .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 60px 20px; }
+  .card { background: #0d1226; border: 1px solid #1e2d50; border-radius: 18px; padding: 44px 40px; width: 100%; max-width: 420px; }
+  .card h2 { font-size: 26px; color: #fff; margin-bottom: 8px; }
+  .card .subtitle { color: #5a7aaa; font-size: 14px; margin-bottom: 36px; }
+  .form-group { margin-bottom: 20px; }
+  label { display: block; font-size: 13px; color: #7a9acd; margin-bottom: 7px; font-weight: 500; }
+  input { width: 100%; padding: 13px 16px; background: #0a0e1a; border: 1px solid #1e2d50; border-radius: 10px; color: #e0e6f0; font-size: 15px; outline: none; transition: border-color 0.2s; }
+  input:focus { border-color: #4f9eff; }
+  input::placeholder { color: #2a3a5a; }
+  .btn-submit { width: 100%; padding: 14px; background: #4f9eff; color: #fff; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+  .btn-submit:hover { background: #2d7de0; }
+  .divider { text-align: center; color: #2a3a5a; font-size: 13px; margin: 24px 0; }
+  .footer-text { text-align: center; color: #5a7aaa; font-size: 14px; }
+  .footer-text a { color: #4f9eff; text-decoration: none; font-weight: 600; }
+  .footer-text a:hover { text-decoration: underline; }
+  .flash-msg { background: #1a1030; border: 1px solid #6b3a8a; border-radius: 8px; padding: 12px 16px; color: #c080f0; font-size: 14px; margin-bottom: 20px; }
+  .flash-msg.error { background: #1a0f0f; border-color: #8a3a3a; color: #f08080; }
+</style>
+</head>
+<body>
+<div class="navbar">
+  <a href="/"><h1>⚡ Scraper Pro</h1></a>
+</div>
+<div class="main">
+  <div class="card">
+    <h2>Welcome back</h2>
+    <p class="subtitle">Apne account mein login karo</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flash-msg error">⚠️ {{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="aapka@email.com" required autofocus />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="btn-submit">Login →</button>
+    </form>
+
+    <div class="divider">— ya —</div>
+    <p class="footer-text">Account nahi hai? <a href="/signup">Sign up karo free</a></p>
+  </div>
+</div>
+</body>
+</html>
